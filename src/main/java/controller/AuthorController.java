@@ -8,6 +8,8 @@ package controller;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
+import java.util.Arrays;
+
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -15,7 +17,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import model.Author;
+import model.AuthorDAO;
 import model.AuthorService;
+import model.MySqlDbAccessor;
 
 
 /**
@@ -25,7 +29,7 @@ import model.AuthorService;
 @WebServlet(name = "AuthorController", urlPatterns = {"/AuthorController"})
 public class AuthorController extends HttpServlet {
 private final String NEXT_PAGE= "/AuthorQueryResults.jsp"; 
-  public String calcType;
+  public String action;
     
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -42,18 +46,40 @@ private final String NEXT_PAGE= "/AuthorQueryResults.jsp";
         PrintWriter out = response.getWriter();
        
         try  {
-             AuthorService authorService = new AuthorService();
-            calcType = request.getParameter("calcType");
-            if(calcType.equals("AuthorList")){
-                    List<Author> authorList = authorService.createList();
+            
+            
+             AuthorService authService = new AuthorService( new AuthorDAO(new MySqlDbAccessor(), "com.mysql.jdbc.Driver",
+                                "jdbc:mysql://localhost:3306/book",
+                                "root", "admin"));
+            action = request.getParameter("action");
+            if(action.equals("AuthorList")){
+                    List<Author> authorList = authService.createList("author",5);
                     request.setAttribute("authorList", authorList);
                     
               
             }
+            else if (action.equals("deleteAuthor")) {
+                authService.deleteAuthor("author", "author_id", 5); 
+                List<Author> authors = authService.createList("author", 10);
+                request.setAttribute("authors", authors);
+                //destination = VIEW_AUTHORS;
+            } else  if (action.equals("insertAuthor")){
+                authService.insertAuthor("author", Arrays.asList(new String[]{"author_name", "date_added"}), Arrays.asList(new String[]{"Hailey Scheidegger", "2004-1-19"}));
+                List<Author> authors = authService.createList("author", 10);
+                request.setAttribute("authors", authors);
+               // destination = VIEW_AUTHORS;
+            } else if (action.equals("updateAuthor")){
+                authService.updateAuthor("author", Arrays.asList(new String[]{"author_name", "date_added"}), Arrays.asList(new String[]{"Mark Twain", "2017-03-04"}), "author_id", 6);
+                List<Author> authors = authService.createList("author", 10);
+                request.setAttribute("authors", authors);
+              //  destination = VIEW_AUTHORS;
+            } else {
+                request.setAttribute("errMsg", "Nothing to do ...");
+            }
         }
      
         catch(Exception e){
-            
+           e.printStackTrace();
         }
         RequestDispatcher view = request.getRequestDispatcher(NEXT_PAGE);
         view.forward(request, response);

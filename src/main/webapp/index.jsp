@@ -76,35 +76,16 @@
     <div class="container">  
 <h1>Book Web App</h1>
          
-        <form id="authorForm" name="authorForm" method="POST" action="AuthorController?calcType=AuthorList">
+        <form id="authorForm" name="authorForm" method="POST" action="AuthorController?action=AuthorList">
              <input id="submitForm" name="submitForm" type="submit" value="Authors"><br><br>
+             <br><br>
+             <br><br>
+             <br><br>
+             <br><br>
         </form>  
     
     
-  <div class="row">
-    <div class="col-sm-4">
-      <div class="panel panel-primary">
-        <div class="panel-heading">Feburary Deals</div>
-        <div class="panel-body"><img src="https://placehold.it/150x80?text=IMAGE" class="img-responsive" style="width:100%" alt="Image"></div>
-        <div class="panel-footer">Buy 50 books and get a gift card</div>
-      </div>
-    </div>
-    <div class="col-sm-4"> 
-      <div class="panel panel-danger">
-        <div class="panel-heading">Another Deal!</div>
-        <div class="panel-body"><img src="https://placehold.it/150x80?text=IMAGE" class="img-responsive" style="width:100%" alt="Image"></div>
-        <div class="panel-footer">Buy 50 books and get a gift card</div>
-      </div>
-    </div>
-    <div class="col-sm-4"> 
-      <div class="panel panel-success">
-        <div class="panel-heading">More Stuff!</div>
-        <div class="panel-body"><img src="https://placehold.it/150x80?text=IMAGE" class="img-responsive" style="width:100%" alt="Image"></div>
-        <div class="panel-footer">Stuff blah blah</div>
-      </div>
-    </div>
-  </div>
-</div><br>
+  <<br>
 <br><br>
 
 <footer class="container-fluid text-center">
