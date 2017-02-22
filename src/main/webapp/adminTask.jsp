@@ -1,13 +1,16 @@
 <%-- 
-    Document   : index
-    Created on : Feb 7, 2017, 4:59:44 AM
+    Document   : adminResults
+    Created on : Feb 21, 2017, 4:50:32 AM
     Author     : Jennifer
 --%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!DOCTYPE html>
 <html>
     <head>
+     
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
@@ -15,7 +18,7 @@
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
         <title>Book Web App</title>
     </head>
-    <body>
+    
         <style>
             /* Remove the navbar's default rounded borders and increase the bottom margin */ 
             .navbar {
@@ -70,57 +73,52 @@
         </div>
     </nav>
 
-
-
-
-    <div class="container">  
-        <h1>Book Web App</h1>
-        <form id="authorForm" name="authorForm" method="POST" action="AuthorController?action=deleteAuthor">
-            <h1>Administrative Options : </h1>
-            <ol>
-                <li><a href="AuthorController?action=list">View all Authors</a></li>
-                <li><a href="AuthorController?action=updateShow">Update an Author</a></li>
-                <li><a href="AuthorController?action=addShow">Add an Author</a></li>
-                <li><a href="AuthorController?action=deleteShow">Delete an Author</a></li>            
-
-            </ol>
-            <br><br>
-            <br><br>
-            <br><br>
-            <br><br>
-        </form>  
-
-
-
-
-
-        <footer class="container-fluid text-center">
-            <p>Online Store Copyright</p>  
-            <form class="form-inline">Get deals:
-                <input type="email" class="form-control" size="50" placeholder="Email Address">
-                <button type="button" class="btn btn-danger">Sign Up</button>
-            </form>
-        </footer>  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-</body>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <div class="results">
+        
+        <div id ="${deleteForm}">
+       <h1>Delete Author</h1>
+        <form id="delete_author" name="delete_author" method="POST" action="AuthorController?action=delete">
+            <select id="authorID" name="authorID"> 
+                <c:forEach var="a" items="${authorDelete}">
+                    <option value="${a.authorId}">${a.authorName}</option>                
+                </c:forEach>
+            </select>
+            <input type="submit" name="delete" value="Delete">
+          
+</form>
+  
+        <h1>Update Author</h1>
+        <form id="update_author" name="update_author" method="POST" action="AuthorController?action=update">
+            <table>
+                <tr>
+                    <td>
+                        <select id="authorUpdate" name="authorID"> 
+                            <c:forEach var="a" items="${authorUpdate}">
+                                <option value="${a.authorId}">${a.authorName}</option>                
+                            </c:forEach>                                
+                        </select>                       
+                    </td>
+                    <td>
+                        <input type="text" id="author_name" name="author_name">
+                    </td>
+                    <td>
+                        <input type="submit" name="update" value="Update">
+                    </td>
+                </tr>
+                
+<!--                <tr>
+                    <td>ID</td>
+                    <td>
+                        <input type="text" id="author_id" name="author_id" value="<c:out value="${a.authorId}"/>">
+                    </td>                
+                </tr>
+-->
+            </table>
+                    </div>
+        </form>   
+        
+        
+    </div>
+    </body>
+    
 </html>

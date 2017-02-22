@@ -60,7 +60,7 @@ public class Author {
 
     public final void setDateAdded(Date dateAdded) throws IllegalArgumentException {
         if(dateAdded == null) {
-            throw new IllegalArgumentException("date addedl" + NULL_MSG);
+            throw new IllegalArgumentException("date added" + NULL_MSG);
         }
          this.dateAdded = dateAdded;
     }

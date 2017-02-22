@@ -219,18 +219,18 @@ public class MySqlDbAccessor implements DbAccessor {
 
         // how to add a List of dates?
         List<Object> colValues = new ArrayList();
-        colValues.add(7);
-        colValues.add("Smith");
+        colValues.add(12);
+        colValues.add("Gaiman");
         colValues.add(date);
 
-       // db.insertRecord("author", cols, colValues);
+        db.insertRecord("author", cols, colValues);
         
           // how to add a List of dates?
         List<Object> colValues2 = new ArrayList();
         colValues.add(8);
         colValues.add("Miller");
         colValues.add(date);
-        db.updateRecordById("author", cols, colValues2,"author_id" , 8 );
+        //db.updateRecordById("author", cols, colValues2,"author_id" , 8 );
 
         // System.out.println(db.deleteRecordById("author", "author_id", 4));
         List<Map<String, Object>> records = db.getAllRecords("author", 10);

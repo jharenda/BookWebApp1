@@ -14,7 +14,9 @@ import java.util.Objects;
 
 /**
  *  // need to add validation to getters and setters
- *
+ * // DAO should do conversion of the passed values from the controller/web page (like id for delete method (string to int) 
+ * 
+ * 
  * @author Jennifer DOA should use the language of the customer/ problem domain
  * use DAO to translate raw data we will have different DAOs for unit testing
  * (no access to external test- can test faster) - run after every edit and
@@ -27,7 +29,6 @@ public class AuthorDAO implements iAuthorDAO {
     private String url;
     private String userName;
     private String password;
-    
 
     private static final String TABLE_NAME = "author";
     private static final String PRIMARY_KEY_COLUMN_NAME = "author_id";
@@ -45,37 +46,34 @@ public class AuthorDAO implements iAuthorDAO {
     @Override
     public List<Author> getAuthorList(String tableName, int maxRecords) throws ClassNotFoundException, SQLException {
         List<Author> records = new ArrayList<>();
-        
-         db.openConnection(driverClass, url, userName, password);
+
+        db.openConnection(driverClass, url, userName, password);
         List<Map<String, Object>> rawData = db.getAllRecords(tableName, maxRecords);
-        
-        for(Map<String, Object> rawRec: rawData){
+
+        for (Map<String, Object> rawRec : rawData) {
             //requires default empty constructor in Author object
-            Author author = new Author(); 
-            
-            Object objId = rawRec.get("author_id"); 
-            Integer authorId = (Integer) objId; 
+            Author author = new Author();
+
+            Object objId = rawRec.get("author_id");
+            Integer authorId = (Integer) objId;
             author.setAuthorId(authorId);
-            
+
             Object objName = rawRec.get("author_name");
-            String name = (objName !=null) ? objName.toString() : ""; 
+            String name = (objName != null) ? objName.toString() : "";
             author.setAuthorName(name);
-            
-            
+
             Object objDate = rawRec.get("date_added");
-            Date date = (objDate != null) ? (Date)objDate : null;
+            Date date = (objDate != null) ? (Date) objDate : null;
             author.setDateAdded(date);
-            
-            records.add(author); 
-            
+
+            records.add(author);
+
         }
 
-       db.closeConnection(); 
+        db.closeConnection();
 
         return records;
     }
-    
-    
 
     @Override
     public DbAccessor getDb() {
@@ -163,23 +161,26 @@ public class AuthorDAO implements iAuthorDAO {
         }
         return true;
     }
-   
+
     public static void main(String[] args) throws ClassNotFoundException, SQLException {
-        iAuthorDAO  dao = new AuthorDAO (new MySqlDbAccessor(), 
-                "com.mysql.jdbc.Driver", "jdbc:mysql://localhost:3306/book", 
+        iAuthorDAO dao = new AuthorDAO(new MySqlDbAccessor(),
+                "com.mysql.jdbc.Driver", "jdbc:mysql://localhost:3306/book",
                 "root", "admin");
-        
-        List<Author> authors = dao.getAuthorList("author", 5); 
-        for(Author a : authors){
-            System.out.println(a);
-           
-        }
+
+        int result = dao.deleteRecordById("author", "author_id", 2);
+        System.out.println("deleted " + result + " record");
+
+//        List<Author> authors = dao.getAuthorList("author", 5); 
+//        for(Author a : authors){
+//            System.out.println(a);
+//           
+//        }
     }
 
     @Override
     public int updateRecordById(String tableName, List<String> colNames, List<Object> colValues, String pkColName, Object pkValue) throws SQLException, ClassNotFoundException {
-       db.openConnection(driverClass, url, userName, password);
-       
+        db.openConnection(driverClass, url, userName, password);
+
         int result = db.updateRecordById(tableName, colNames, colValues, pkColName, pkValue);
         db.closeConnection();
         return result;
@@ -187,20 +188,19 @@ public class AuthorDAO implements iAuthorDAO {
 
     @Override
     public int deleteRecordById(String tableName, String columnName, Object primaryKey) throws SQLException, ClassNotFoundException {
-         
-    int execResult = db.deleteRecordById(tableName, columnName, primaryKey);
-       
+        db.openConnection(driverClass, url, userName, password);
+        int execResult = db.deleteRecordById(tableName, columnName, primaryKey);
+
         db.closeConnection();
         return execResult;
-        
-      
+
     }
 
     @Override
     public void insertRecord(String tableName, List<String> colNames, List<Object> colValues) throws Exception {
-         db.openConnection(driverClass, url, userName, password);  
+        db.openConnection(driverClass, url, userName, password);
         db.insertRecord(tableName, colNames, colValues);
-        db.closeConnection();       
-      
+        db.closeConnection();
+
     }
 }

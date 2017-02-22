@@ -21,16 +21,28 @@ import model.AuthorDAO;
 import model.AuthorService;
 import model.MySqlDbAccessor;
 
-
 /**
  *
  * @author Jennifer
  */
 @WebServlet(name = "AuthorController", urlPatterns = {"/AuthorController"})
 public class AuthorController extends HttpServlet {
-private final String NEXT_PAGE= "/AuthorQueryResults.jsp"; 
-  public String action;
-    
+
+    private static final String NEXT_PAGE = "/AuthorQueryResults.jsp";
+
+    private static final String ERR_MSG = "No parameter detected";
+ private static final String ADMIN_TASK_PAGE = "/adminTask.jsp";
+    private static final String ADMIN_RESULTS_PAGE = "/adminResults.jsp";
+    private static final String HOME_PAGE = "/index.jsp";
+    private static final String DELETE_ACTION = "delete";
+    private static final String DELETESHOW_ACTION = "deleteShow";
+    private static final String LIST_ACTION = "list";
+    private static final String UPDATE_ACTION = "update";
+    private static final String UPDATESHOW_ACTION = "updateShow";
+    private static final String ADD_ACTION = "add";
+    private static final String ADDSHOW_ACTION = "addShow";
+    private static final String ACTION_PARAM = "action";
+
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -44,47 +56,62 @@ private final String NEXT_PAGE= "/AuthorQueryResults.jsp";
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
-       
-        try  {
-            
-            
-             AuthorService authService = new AuthorService( new AuthorDAO(new MySqlDbAccessor(), "com.mysql.jdbc.Driver",
-                                "jdbc:mysql://localhost:3306/book",
-                                "root", "admin"));
-            action = request.getParameter("action");
-            if(action.equals("AuthorList")){
-                    List<Author> authorList = authService.createList("author",5);
-                    request.setAttribute("authorList", authorList);
-                    
-              
+        String destination = HOME_PAGE;
+        String action = request.getParameter(ACTION_PARAM);
+        try {
+
+            AuthorService authorService = new AuthorService(new AuthorDAO(new MySqlDbAccessor(), "com.mysql.jdbc.Driver",
+                    "jdbc:mysql://localhost:3306/book",
+                    "root", "admin"));
+
+            switch (action) {
+                case LIST_ACTION:
+                    List<Author> authors = authorService.createList("author", 50);
+                    request.setAttribute("authors", authors);
+                    destination = ADMIN_RESULTS_PAGE;
+                    break;
+                case DELETE_ACTION:
+                    Integer authorID = Integer.parseInt(request.getParameter("authorID"));
+                    authorService.deleteAuthor("author", "author_id", authorID);
+                    destination = HOME_PAGE;
+                    break;
+                case UPDATE_ACTION:
+                    String authorName = request.getParameter("author_name");
+                    Integer authorID2 = Integer.parseInt(request.getParameter("authorID"));
+
+                     //authorService.updateAuthor(authorName, authorID2);
+                    destination = HOME_PAGE;
+                    break;
+                case ADD_ACTION:
+                    String name = request.getParameter("author_name");
+                    //authorService.addAuthor(name);
+                    destination = ADMIN_TASK_PAGE;
+                    break;
+                case ADDSHOW_ACTION:
+                    destination =ADMIN_TASK_PAGE ;
+                    break;
+                case UPDATESHOW_ACTION:
+                    List<Author> authorUpdate = authorService.createList("author", 50);
+                    request.setAttribute("authorUpdate", authorUpdate);
+                    destination = ADMIN_TASK_PAGE;
+                    break;
+                case DELETESHOW_ACTION:
+                    String deleteForm = "deleteForm";
+                    List<Author> authorDelete = authorService.createList("author", 50);
+                    request.setAttribute("deleteForm", deleteForm);
+                    request.setAttribute("authorDelete", authorDelete);
+                    destination = ADMIN_TASK_PAGE;
+                    break;
+
             }
-            else if (action.equals("deleteAuthor")) {
-                authService.deleteAuthor("author", "author_id", 5); 
-                List<Author> authors = authService.createList("author", 10);
-                request.setAttribute("authors", authors);
-                //destination = VIEW_AUTHORS;
-            } else  if (action.equals("insertAuthor")){
-                authService.insertAuthor("author", Arrays.asList(new String[]{"author_name", "date_added"}), Arrays.asList(new String[]{"Hailey Scheidegger", "2004-1-19"}));
-                List<Author> authors = authService.createList("author", 10);
-                request.setAttribute("authors", authors);
-               // destination = VIEW_AUTHORS;
-            } else if (action.equals("updateAuthor")){
-                authService.updateAuthor("author", Arrays.asList(new String[]{"author_name", "date_added"}), Arrays.asList(new String[]{"Mark Twain", "2017-03-04"}), "author_id", 6);
-                List<Author> authors = authService.createList("author", 10);
-                request.setAttribute("authors", authors);
-              //  destination = VIEW_AUTHORS;
-            } else {
-                request.setAttribute("errMsg", "Nothing to do ...");
-            }
+        } catch (Exception e) {
+            request.setAttribute("errMsg", e.getCause().getMessage());
         }
-     
-        catch(Exception e){
-           e.printStackTrace();
-        }
-        RequestDispatcher view = request.getRequestDispatcher(NEXT_PAGE);
-        view.forward(request, response);
+
+        RequestDispatcher dispatcher
+                = getServletContext().getRequestDispatcher(destination);
+        dispatcher.forward(request, response);
     }
-    
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**

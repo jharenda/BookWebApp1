@@ -6,7 +6,9 @@
 package model;
 
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 import java.util.Date;
 import java.util.List;
@@ -46,30 +48,50 @@ public class AuthorService {
     }
     
     public int deleteAuthor(String tableName, String colName, int id) throws ClassNotFoundException, SQLException{
-       return aDAO.deleteRecordById(tableName, colName, id);
-        
+       return aDAO.deleteRecordById(tableName, colName, id); 
     }
 
-    public static void main(String[] args) throws ClassNotFoundException, SQLException {
+    public static void main(String[] args) throws ClassNotFoundException, SQLException, Exception {
         AuthorService authorService
                 = new AuthorService(
                         new AuthorDAO(new MySqlDbAccessor(),
                                 "com.mysql.jdbc.Driver",
                                 "jdbc:mysql://localhost:3306/book",
                                 "root", "admin"));
+      
+     // int deleted =   authorService.deleteAuthor("author", "author_id", 3); 
+     // System.out.println(deleted + " deleted");
         
-        List<Author> authors = authorService.createList("author", 5); 
+     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        Date date = sdf.parse(sdf.format(new Date()));
+
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.HOUR_OF_DAY, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MILLISECOND, 0);
+        date = cal.getTime();
+     
+  List<String> colNames = new ArrayList();
+        colNames.add("author_id");
+        colNames.add("author_name");
+        colNames.add("date_added");
+        
+        
+         List<Object> values = new ArrayList();
+        values.add("13");
+        values.add("Green");
+        values.add(date);
+      //int updated = authorService.updateAuthor("author", colNames, values, "author_id", 2); 
+      //  System.out.println("updated: " + updated);
+      
+      //authorService.insertAuthor("author", colNames, values);
+      
+      
+        List<Author> authors = authorService.createList("author", 22); 
         for(Author a : authors) {
-            System.out.println(a);
-            
+            System.out.println(a);   
         }
-        
-        
-        int inserted = authorService.insertAuthor("author",  colValues)
-        
-      //int deleted =   authorService.deleteAuthor("author", "author_id", 5); 
-      //  System.out.println(deleted + " deleted");
-        
-   
+
     }
 }

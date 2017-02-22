@@ -92,6 +92,15 @@
                 </tbody>
             </table>
         </div>
+        
+        
+         <form id="authorForm" name="authorForm" method="POST" action="AuthorController?action=deleteAuthor">
+             <input id="submitForm" name="submitForm" type="submit" value="Delete"><br><br>
+             <br><br>
+             <br><br>
+             <br><br>
+             <br><br>
+        </form>
   
 
 
